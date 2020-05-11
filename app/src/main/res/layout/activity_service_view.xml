@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ServiceView">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="565dp"
+        android:layout_centerInParent="true">
+
+        <TextView
+            android:id="@+id/serviceTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="New Service"
+            android:textAlignment="center"
+            android:textSize="50sp" />
+
+        <ListView
+            android:id="@+id/listViewList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="70dp"
+            android:visibility="gone" />
+
+        <ListView
+            android:id="@+id/listViewDelete"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="70dp"
+            android:visibility="gone" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/newServiceView"
+        android:layout_width="wrap_content"
+        android:layout_height="563dp"
+        android:layout_centerInParent="true"
+        android:visibility="visible">
+
+
+        <EditText
+            android:id="@+id/editTextName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="80dp"
+            android:ems="10"
+            android:hint="Name"
+            android:inputType="textPersonName" />
+
+        <EditText
+            android:id="@+id/editTextPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="150dp"
+            android:ems="10"
+            android:hint="Price"
+            android:inputType="textPersonName" />
+
+        <EditText
+            android:id="@+id/editTextDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="220dp"
+            android:ems="10"
+            android:hint="Description"
+            android:inputType="textPersonName" />
+
+        <Button
+            android:id="@+id/postBtn"
+            style="@android:style/Widget.Button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="340dp"
+            android:onClick="postClicked"
+            android:text="New"
+            android:textSize="18sp" />
+
+    </FrameLayout>
+
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:itemBackground="@color/colorPrimary"
+        app:itemIconTint="@drawable/selector"
+        app:itemTextColor="@drawable/selector"
+        app:menu="@menu/menu_navigation" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/topNavigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        app:itemBackground="@color/colorPrimary"
+        app:itemIconTint="@drawable/selector"
+        app:itemTextColor="@drawable/selector"
+        app:menu="@menu/menu_top_navigation" />
+
+</RelativeLayout>
