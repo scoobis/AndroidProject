@@ -46,21 +46,12 @@
 
 
         <EditText
-            android:id="@+id/editTextName"
+            android:id="@+id/editTextTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="80dp"
             android:ems="10"
-            android:hint="Name"
-            android:inputType="textPersonName" />
-
-        <EditText
-            android:id="@+id/editTextPrice"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="150dp"
-            android:ems="10"
-            android:hint="Price"
+            android:hint="Title"
             android:inputType="textPersonName" />
 
         <EditText
@@ -71,6 +62,15 @@
             android:ems="10"
             android:hint="Description"
             android:inputType="textPersonName" />
+
+        <EditText
+            android:id="@+id/editTextPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="150dp"
+            android:ems="10"
+            android:hint="Price"
+            android:inputType="number" />
 
         <Button
             android:id="@+id/postBtn"

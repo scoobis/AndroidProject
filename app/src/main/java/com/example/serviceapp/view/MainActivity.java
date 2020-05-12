@@ -1,11 +1,11 @@
 package com.example.serviceapp.view;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.MenuItem;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -15,86 +15,35 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
 
-    TextView homeTextView;
-    TextView companyTextView;
-    TextView shopTextView;
-    TextView loggedInAsTextView;
+    private TextView homeTextView;
+    private TextView companyTextView;
+    private TextView shopTextView;
+    private TextView loggedInAsTextView;
 
-    FrameLayout homeView;
-    FrameLayout informationView;
-    FrameLayout helpView;
+    private FrameLayout homeView;
+    private FrameLayout informationView;
+    private FrameLayout helpView;
+    private FrameLayout settingsView;
+
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
+
+    private String email = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        homeTextView = (TextView) findViewById(R.id.homeTextView);
-        companyTextView = (TextView) findViewById(R.id.companyTextView);
-        shopTextView = (TextView) findViewById(R.id.shopTextView);
-        loggedInAsTextView = (TextView) findViewById(R.id.loggedInAsTextView);
+        checkIfLoggedIn();
 
-        companyTextView.setText("My-Company-Name.inc"); // TODO get company name
-        shopTextView.setText("My-Shop-Name"); // TODO get shop
-        loggedInAsTextView.setText("My-User"); // TODO get logged in user
+        setUpTextView();
 
-        homeView = (FrameLayout) findViewById(R.id.homeView);
-        informationView = (FrameLayout) findViewById(R.id.informationView);
-        helpView = (FrameLayout) findViewById(R.id.helpView);
+        setUpViews();
 
-        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottomNavigation);
-        bottomNavigationView.setSelectedItemId(R.id.home);
+        bottomNavigation();
 
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                switch (menuItem.getItemId()) {
-                    case R.id.home:
-                        return true;
-                    case R.id.services:
-                        startActivity(new Intent(getApplicationContext(), ServiceView.class));
-                        overridePendingTransition(0, 0);
-                        return true;
-                    case R.id.employees:
-                        startActivity(new Intent(getApplicationContext(), EmployeeView.class));
-                        overridePendingTransition(0, 0);
-                        return true;
-                    case R.id.orders:
-                        startActivity(new Intent(getApplicationContext(), OrderView.class));
-                        overridePendingTransition(0, 0);
-                        return true;
-                }
-                return false;
-            }
-        });
-
-        BottomNavigationView topNavigationView = (BottomNavigationView) findViewById(R.id.topNavigation);
-
-        topNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                // Reset view
-                homeView.setVisibility(View.GONE);
-                informationView.setVisibility(View.GONE);
-                helpView.setVisibility(View.GONE);
-
-                switch (menuItem.getItemId()) {
-                    case R.id.homePage:
-                        homePage();
-                        return true;
-                    case R.id.information:
-                        information();
-                        return true;
-                    case R.id.help:
-                        help();
-                        return true;
-                    case R.id.settings:
-                        settings();
-                        return true;
-                }
-                return false;
-            }
-        });
+        topNavigation();
     }
 
     private void homePage() {
@@ -112,5 +61,98 @@ public class MainActivity extends AppCompatActivity {
         helpView.setVisibility(View.VISIBLE);
     }
 
-    private void settings() { homeTextView.setText("Settings"); }
+    private void settings() {
+        homeTextView.setText("Settings");
+        settingsView.setVisibility(View.VISIBLE);
+    }
+
+    public void logoutClicked(View view) {
+        editor.putString(getString(R.string.email1), "");
+        editor.commit();
+        startActivity(new Intent(getApplicationContext(), LoginView.class));
+        overridePendingTransition(0, 0);
+    }
+
+    private void setUpTextView() {
+        homeTextView = findViewById(R.id.homeTextView);
+        companyTextView = findViewById(R.id.companyTextView);
+        shopTextView = findViewById(R.id.shopTextView);
+        loggedInAsTextView = findViewById(R.id.loggedInAsTextView);
+
+        companyTextView.setText("My-Company-Name.inc"); // TODO get company name
+        shopTextView.setText("My-Shop-Name"); // TODO get shop
+        loggedInAsTextView.setText(email);
+    }
+
+    private void setUpViews() {
+        homeView = findViewById(R.id.homeView);
+        informationView = findViewById(R.id.informationView);
+        helpView = findViewById(R.id.helpView);
+        settingsView = findViewById(R.id.settingsView);
+    }
+
+    private void bottomNavigation() {
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
+        bottomNavigationView.setSelectedItemId(R.id.home);
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(menuItem -> {
+            switch (menuItem.getItemId()) {
+                case R.id.home:
+                    return true;
+                case R.id.services:
+                    startActivity(new Intent(getApplicationContext(), ServiceView.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                case R.id.employees:
+                    startActivity(new Intent(getApplicationContext(), EmployeeView.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                case R.id.orders:
+                    startActivity(new Intent(getApplicationContext(), OrderView.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+            }
+            return false;
+        });
+    }
+
+    private void topNavigation() {
+        BottomNavigationView topNavigationView = findViewById(R.id.topNavigation);
+
+        topNavigationView.setOnNavigationItemSelectedListener(menuItem -> {
+            // Reset view
+            homeView.setVisibility(View.GONE);
+            informationView.setVisibility(View.GONE);
+            helpView.setVisibility(View.GONE);
+            settingsView.setVisibility(View.GONE);
+
+            switch (menuItem.getItemId()) {
+                case R.id.homePage:
+                    homePage();
+                    return true;
+                case R.id.information:
+                    information();
+                    return true;
+                case R.id.help:
+                    help();
+                    return true;
+                case R.id.settings:
+                    settings();
+                    return true;
+            }
+            return false;
+        });
+    }
+
+    private void checkIfLoggedIn() {
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        editor = sharedPreferences.edit();
+
+        email = sharedPreferences.getString(getString(R.string.email1), "");
+
+        if (!email.equalsIgnoreCase("test@email")) {
+            startActivity(new Intent(getApplicationContext(), LoginView.class));
+            overridePendingTransition(0, 0);
+        }
+    }
     }

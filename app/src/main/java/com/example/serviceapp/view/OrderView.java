@@ -24,15 +24,15 @@ import java.util.ArrayList;
 
 public class OrderView extends AppCompatActivity {
 
-    TextView orderTextView;
+    private TextView orderTextView;
 
-    FrameLayout editOrderView;
-    FrameLayout newOrderView;
+    private FrameLayout editOrderView;
+    private FrameLayout newOrderView;
 
-    ListView listViewList;
-    ListView listViewDelete;
+    private ListView listViewList;
+    private ListView listViewDelete;
 
-    ArrayList<String> orders;
+    private ArrayList<String> orders;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,92 +41,32 @@ public class OrderView extends AppCompatActivity {
 
         orderTextView = findViewById(R.id.orderTextView);
 
-        listViewList = findViewById(R.id.listViewList);
-        listViewDelete = findViewById(R.id.listViewDelete);
+        setUpListView();
 
-        editOrderView =  findViewById(R.id.editOrderView);
-        newOrderView = findViewById(R.id.newOrderView);
+        setUpView();
 
-        orders = new ArrayList<String>();
-        orders.add("Petter Svensson  |  Change Tier  |  $6  |  2019-05-05");
-        orders.add("Petter Svensson  |  Change Tier  |  $6  |  2019-05-05");
-        orders.add("Petter Svensson  |  Change Tier  |  $6  |  2019-05-05");
-        orders.add("Petter Svensson  |  Change Tier  |  $6  |  2019-05-05");
-        orders.add("Petter Svensson  |  Change Tier  |  $6  |  2019-05-05");
-        orders.add("Petter Svensson  |  Change Tier  |  $6  |  2019-05-05");
+        addOrderList();
 
 
-        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottomNavigation);
+        bottomNavigation();
 
-        bottomNavigationView.setSelectedItemId(R.id.orders);
-
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                switch (menuItem.getItemId()) {
-                    case R.id.orders:
-                        return true;
-                    case R.id.services:
-                        startActivity(new Intent(getApplicationContext(), ServiceView.class));
-                        overridePendingTransition(0, 0);
-                        return true;
-                    case R.id.employees:
-                        startActivity(new Intent(getApplicationContext(), EmployeeView.class));
-                        overridePendingTransition(0, 0);
-                        return true;
-                    case R.id.home:
-                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                        overridePendingTransition(0, 0);
-                        return true;
-                }
-                return false;
-            }
-        });
-
-        BottomNavigationView topNavigationView = (BottomNavigationView) findViewById(R.id.topNavigation);
-
-        topNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                // Reset view
-                newOrderView.setVisibility(View.GONE);
-                editOrderView.setVisibility(View.GONE);
-                listViewDelete.setVisibility(View.GONE);
-                listViewList.setVisibility(View.GONE);
-
-                switch (menuItem.getItemId()) {
-                    case R.id.new_nav:
-                        newOrder();
-                        return true;
-                    case R.id.edit:
-                        editOrder();
-                        return true;
-                    case R.id.delete:
-                        deleteOrder();
-                        return true;
-                    case R.id.list:
-                        listOrders();
-                        return true;
-                }
-                return false;
-            }
-        });
+        topNavigation();
     }
 
     public void newClicked(View view) {
-        EditText editTextCustomer = (EditText) findViewById(R.id.editTextCustomer);
-        EditText editTextService = (EditText) findViewById(R.id.editTextService);
-        EditText editTextPrice = (EditText) findViewById(R.id.editTextPrice);
+        EditText editTextCustomer = findViewById(R.id.editTextCustomer);
+        EditText editTextService = findViewById(R.id.editTextService);
+        EditText editTextPrice = findViewById(R.id.editTextPrice);
 
         // TODO Call new Order
 
     }
 
     public void editClicked(View view) {
-        EditText order = (EditText) findViewById(R.id.editTextOrder);
-        EditText customer = (EditText) findViewById(R.id.editTextCustomerEdit);
-        EditText service = (EditText) findViewById(R.id.editTextPriceEdit);
-        EditText price = (EditText) findViewById(R.id.editTextPriceEdit);
+        EditText order = findViewById(R.id.editTextOrder);
+        EditText customer = findViewById(R.id.editTextCustomerEdit);
+        EditText service = findViewById(R.id.editTextPriceEdit);
+        EditText price = findViewById(R.id.editTextPriceEdit);
 
         // TODO call edit order
 
@@ -150,13 +90,7 @@ public class OrderView extends AppCompatActivity {
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1, orders);
         listViewDelete.setAdapter(arrayAdapter);
 
-        listViewDelete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
-                confirmDeleteOrder();
-            }
-        });
+        listViewDelete.setOnItemClickListener((arg0, arg1, position, arg3) -> confirmDeleteOrder());
     }
 
     private void listOrders() {
@@ -168,26 +102,97 @@ public class OrderView extends AppCompatActivity {
         listViewList.setAdapter(arrayAdapter);
     }
 
-    private void confirmDeleteOrder() {
-        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which){
-                    case DialogInterface.BUTTON_POSITIVE:
-                        // yes
-                        // TODO call controller delete service
-                        Toast.makeText(getApplicationContext(), "Deleted", Toast.LENGTH_SHORT).show();
-                        break;
+    private void setUpListView() {
+        listViewList = findViewById(R.id.listViewList);
+        listViewDelete = findViewById(R.id.listViewDelete);
+    }
 
-                    case DialogInterface.BUTTON_NEGATIVE:
-                        // no (do nothing)
-                        break;
-                }
+    private void setUpView() {
+        editOrderView =  findViewById(R.id.editOrderView);
+        newOrderView = findViewById(R.id.newOrderView);
+    }
+
+    private void addOrderList() {
+        orders = new ArrayList<String>();
+        orders.add("Petter Svensson  |  Change Tier  |  $6  |  2019-05-05");
+        orders.add("Petter Svensson  |  Change Tier  |  $6  |  2019-05-05");
+        orders.add("Petter Svensson  |  Change Tier  |  $6  |  2019-05-05");
+        orders.add("Petter Svensson  |  Change Tier  |  $6  |  2019-05-05");
+        orders.add("Petter Svensson  |  Change Tier  |  $6  |  2019-05-05");
+        orders.add("Petter Svensson  |  Change Tier  |  $6  |  2019-05-05");
+    }
+
+    private void confirmDeleteOrder() {
+        DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
+            switch (which){
+                case DialogInterface.BUTTON_POSITIVE:
+                    // yes
+                    // TODO call controller delete service
+                    Toast.makeText(getApplicationContext(), "Deleted", Toast.LENGTH_SHORT).show();
+                    break;
+
+                case DialogInterface.BUTTON_NEGATIVE:
+                    // no (do nothing)
+                    break;
             }
         };
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Are you sure you want to delete?").setPositiveButton("Yes", dialogClickListener)
                 .setNegativeButton("No", dialogClickListener).show();
+    }
+
+    private void bottomNavigation() {
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
+
+        bottomNavigationView.setSelectedItemId(R.id.orders);
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(menuItem -> {
+            switch (menuItem.getItemId()) {
+                case R.id.orders:
+                    return true;
+                case R.id.services:
+                    startActivity(new Intent(getApplicationContext(), ServiceView.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                case R.id.employees:
+                    startActivity(new Intent(getApplicationContext(), EmployeeView.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                case R.id.home:
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+            }
+            return false;
+        });
+    }
+
+    private void topNavigation() {
+        BottomNavigationView topNavigationView = findViewById(R.id.topNavigation);
+
+        topNavigationView.setOnNavigationItemSelectedListener(menuItem -> {
+            // Reset view
+            newOrderView.setVisibility(View.GONE);
+            editOrderView.setVisibility(View.GONE);
+            listViewDelete.setVisibility(View.GONE);
+            listViewList.setVisibility(View.GONE);
+
+            switch (menuItem.getItemId()) {
+                case R.id.new_nav:
+                    newOrder();
+                    return true;
+                case R.id.edit:
+                    editOrder();
+                    return true;
+                case R.id.delete:
+                    deleteOrder();
+                    return true;
+                case R.id.list:
+                    listOrders();
+                    return true;
+            }
+            return false;
+        });
     }
     }

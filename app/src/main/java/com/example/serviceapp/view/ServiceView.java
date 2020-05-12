@@ -1,15 +1,12 @@
 package com.example.serviceapp.view;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,6 +17,7 @@ import android.widget.Toast;
 
 import com.example.serviceapp.R;
 import com.example.serviceapp.controller.ServiceController;
+import com.example.serviceapp.model.Service;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
@@ -27,14 +25,17 @@ import java.util.ArrayList;
 public class ServiceView extends AppCompatActivity {
 
     private TextView serviceTextView;
-    ListView listViewList;
-    ListView listViewDelete;
-    ArrayList<String> services;
-    FrameLayout newServiceView;
+    private ListView listViewList;
+    private ListView listViewDelete;
+
+    private FrameLayout newServiceView;
+
+    private ArrayList<Service> services;
+    private ArrayList<String> serviceList;
 
     private ServiceController serviceController;
 
-    Button postBtn;
+    private Button postBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,76 +44,20 @@ public class ServiceView extends AppCompatActivity {
 
         serviceController = new ServiceController();
 
-        serviceTextView = (TextView) findViewById(R.id.serviceTextView);
-        listViewList = (ListView) findViewById(R.id.listViewList);
-        listViewDelete = (ListView) findViewById(R.id.listViewDelete);
-        newServiceView = (FrameLayout) findViewById(R.id.newServiceView);
+        serviceTextView = findViewById(R.id.serviceTextView);
 
-        postBtn = (Button) findViewById(R.id.postBtn);
+        listViewList = findViewById(R.id.listViewList);
+        listViewDelete = findViewById(R.id.listViewDelete);
 
-        services = new ArrayList<String>();
-        services.add("Change Tier       $3");
-        services.add("Repair wheel      $7");
-        services.add("Repair window     $6");
-        services.add("Change Tier       $3");
-        services.add("Repair wheel      $7");
-        services.add("Repair window     $6");
+        newServiceView = findViewById(R.id.newServiceView);
 
-        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottomNavigation);
+        postBtn = findViewById(R.id.postBtn);
 
-        bottomNavigationView.setSelectedItemId(R.id.services);
+        addServiceList();
 
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                switch (menuItem.getItemId()) {
-                    case R.id.services:
-                        return true;
-                    case R.id.home:
-                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                        overridePendingTransition(0, 0);
-                        return true;
-                    case R.id.employees:
-                        startActivity(new Intent(getApplicationContext(), EmployeeView.class));
-                        overridePendingTransition(0, 0);
-                        return true;
-                    case R.id.orders:
-                        startActivity(new Intent(getApplicationContext(), OrderView.class));
-                        overridePendingTransition(0, 0);
-                        return true;
-                }
-                return false;
-            }
-        });
+        bottomNavigation();
 
-        BottomNavigationView topNavigationView = (BottomNavigationView) findViewById(R.id.topNavigation);
-
-        topNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                // Reset view
-                listViewList.setVisibility(View.GONE);
-                listViewDelete.setVisibility(View.GONE);
-                newServiceView.setVisibility(View.GONE);
-                postBtn.setVisibility(View.GONE);
-
-                switch (menuItem.getItemId()) {
-                    case R.id.new_nav:
-                        newService();
-                        return true;
-                    case R.id.edit:
-                        editService();
-                        return true;
-                    case R.id.delete:
-                        deleteService();
-                        return true;
-                    case R.id.list:
-                        listServices();
-                        return true;
-                }
-                return false;
-            }
-        });
+       topNavigation();
     }
 
     private void newService() {
@@ -134,16 +79,10 @@ public class ServiceView extends AppCompatActivity {
 
         listViewDelete.setVisibility(View.VISIBLE);
 
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1, services);
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1, serviceList);
         listViewDelete.setAdapter(arrayAdapter);
 
-        listViewDelete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
-                confirmDeleteService();
-            }
-        });
+        listViewDelete.setOnItemClickListener((arg0, arg1, position, arg3) -> confirmDeleteService());
     }
 
     private void listServices() {
@@ -151,25 +90,22 @@ public class ServiceView extends AppCompatActivity {
 
         listViewList.setVisibility(View.VISIBLE);
 
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1, services);
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_expandable_list_item_1, serviceList);
         listViewList.setAdapter(arrayAdapter);
     }
 
     private void confirmDeleteService() {
-        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which){
-                    case DialogInterface.BUTTON_POSITIVE:
-                        // yes
-                        // TODO call controller delete service
-                        Toast.makeText(getApplicationContext(), "Deleted", Toast.LENGTH_SHORT).show();
-                        break;
+        DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
+            switch (which){
+                case DialogInterface.BUTTON_POSITIVE:
+                    // yes
+                    // TODO call controller delete service
+                    Toast.makeText(getApplicationContext(), "Deleted", Toast.LENGTH_SHORT).show();
+                    break;
 
-                    case DialogInterface.BUTTON_NEGATIVE:
-                        // no (do nothing)
-                        break;
-                }
+                case DialogInterface.BUTTON_NEGATIVE:
+                    // no (do nothing)
+                    break;
             }
         };
 
@@ -179,18 +115,91 @@ public class ServiceView extends AppCompatActivity {
     }
 
     public void postClicked(View view) {
-        EditText editTextName = (EditText) findViewById(R.id.editTextName);
-        EditText editTextPrice = (EditText) findViewById(R.id.editTextPrice);
-        EditText editTextDescription = (EditText) findViewById(R.id.editTextDescription);
+        EditText editTextTitle = findViewById(R.id.editTextTitle);
+        EditText editTextPrice = findViewById(R.id.editTextPrice);
+        EditText editTextDescription = findViewById(R.id.editTextDescription);
+        String message = "";
+
+        int price = 0;
+        if (editTextPrice.getText().toString().equalsIgnoreCase("")) price = -1;
+        else Integer.parseInt(editTextPrice.getText().toString());
 
         if (postBtn.getText().toString().equalsIgnoreCase("new")) {
-            serviceController.newService();
+            // Success or fail message!
+            message = serviceController.newService("My-Company", editTextTitle.getText().toString(), // TODO add company name!
+                    editTextDescription.getText().toString(), price);
         } else {
-            // TODO call controller edit service
+            Service service = new Service();
+            service.setCompany("My-Company"); // TODO set company
+            service.setTitle(editTextTitle.getText().toString());
+            service.setDescription(editTextDescription.getText().toString());
+            service.setPrice(price);
+            message = serviceController.editService(service);
+        }
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    private  void addServiceList() {
+        services = serviceController.getAllServices();
+
+        serviceList = new ArrayList<>();
+
+        for (int i = 0; i < services.size(); i++) {
+            serviceList.add(services.get(i).getTitle() + "  |  $" + services.get(i).getPrice());
         }
     }
 
-    private void deleteServiceObject() {
-        System.out.println("delete");
+    private void bottomNavigation() {
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
+
+        bottomNavigationView.setSelectedItemId(R.id.services);
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(menuItem -> {
+            switch (menuItem.getItemId()) {
+                case R.id.services:
+                    return true;
+                case R.id.home:
+                    startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                case R.id.employees:
+                    startActivity(new Intent(getApplicationContext(), EmployeeView.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                case R.id.orders:
+                    startActivity(new Intent(getApplicationContext(), OrderView.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+            }
+            return false;
+        });
+    }
+
+    private void topNavigation() {
+        BottomNavigationView topNavigationView = findViewById(R.id.topNavigation);
+
+        topNavigationView.setOnNavigationItemSelectedListener(menuItem -> {
+            // Reset view
+            listViewList.setVisibility(View.GONE);
+            listViewDelete.setVisibility(View.GONE);
+            newServiceView.setVisibility(View.GONE);
+            postBtn.setVisibility(View.GONE);
+
+            switch (menuItem.getItemId()) {
+                case R.id.new_nav:
+                    newService();
+                    return true;
+                case R.id.edit:
+                    editService();
+                    return true;
+                case R.id.delete:
+                    deleteService();
+                    return true;
+                case R.id.list:
+                    listServices();
+                    return true;
+            }
+            return false;
+        });
     }
 }

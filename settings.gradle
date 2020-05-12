@@ -1,2 +1,2 @@
 rootProject.name='ServiceApp'
-include ':app'
+include ':app', ':mysql-connector-java-5.1.49'
