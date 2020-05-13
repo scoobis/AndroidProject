@@ -111,6 +111,9 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(new Intent(getApplicationContext(), OrderView.class));
                     overridePendingTransition(0, 0);
                     return true;
+                case R.id.customers:
+                    startActivity(new Intent(getApplicationContext(), CustomerView.class));
+                    overridePendingTransition(0, 0);
             }
             return false;
         });

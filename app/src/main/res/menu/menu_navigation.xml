@@ -17,6 +17,11 @@
         android:icon="@drawable/ic_payment"/>
 
     <item
+        android:id="@+id/customers"
+        android:title="Customers"
+        android:icon="@drawable/ic_customer"/>
+
+    <item
         android:id="@+id/employees"
         android:title="Employees"
         android:icon="@drawable/ic_people"/>

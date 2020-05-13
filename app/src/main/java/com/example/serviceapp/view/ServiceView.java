@@ -5,7 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -37,6 +39,10 @@ public class ServiceView extends AppCompatActivity {
 
     private Button postBtn;
 
+    private SharedPreferences sharedPreferences;
+    private SharedPreferences.Editor editor;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +63,7 @@ public class ServiceView extends AppCompatActivity {
 
         bottomNavigation();
 
-       topNavigation();
+        topNavigation();
     }
 
     private void newService() {
@@ -68,6 +74,7 @@ public class ServiceView extends AppCompatActivity {
     }
 
     private void editService() {
+        // TODO change view!
         serviceTextView.setText("Edit Service");
         newServiceView.setVisibility(View.VISIBLE);
         postBtn.setVisibility(View.VISIBLE);
@@ -92,6 +99,14 @@ public class ServiceView extends AppCompatActivity {
 
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_expandable_list_item_1, serviceList);
         listViewList.setAdapter(arrayAdapter);
+
+        listViewList.setOnItemClickListener((arg0, arg1, position, arg3) -> {
+            Intent intent = new Intent(getApplicationContext(), SpecificServiceView.class);
+            intent.putExtra("description", services.get(position).getDescription());
+            intent.putExtra("price", Integer.toString(services.get(position).getPrice()));
+            startActivity(intent);
+            overridePendingTransition(0, 0);
+        });
     }
 
     private void confirmDeleteService() {
@@ -99,8 +114,8 @@ public class ServiceView extends AppCompatActivity {
             switch (which){
                 case DialogInterface.BUTTON_POSITIVE:
                     // yes
-                    // TODO call controller delete service
-                    Toast.makeText(getApplicationContext(), "Deleted", Toast.LENGTH_SHORT).show();
+                    String message = serviceController.deleteService(new Service()); // TODO remove correct service
+                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
                     break;
 
                 case DialogInterface.BUTTON_NEGATIVE:
@@ -120,11 +135,18 @@ public class ServiceView extends AppCompatActivity {
         EditText editTextDescription = findViewById(R.id.editTextDescription);
         String message = "";
 
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        editor = sharedPreferences.edit();
+
+        String status = sharedPreferences.getString(getString(R.string.status), "");
+
         int price = 0;
         if (editTextPrice.getText().toString().equalsIgnoreCase("")) price = -1;
         else Integer.parseInt(editTextPrice.getText().toString());
 
-        if (postBtn.getText().toString().equalsIgnoreCase("new")) {
+        // Make sure the employee have permission to edit / create services
+        if (status.equalsIgnoreCase("admin") || status.equalsIgnoreCase("super_admin")) {
+            if (postBtn.getText().toString().equalsIgnoreCase("new")) {
             // Success or fail message!
             message = serviceController.newService("My-Company", editTextTitle.getText().toString(), // TODO add company name!
                     editTextDescription.getText().toString(), price);
@@ -136,6 +158,7 @@ public class ServiceView extends AppCompatActivity {
             service.setPrice(price);
             message = serviceController.editService(service);
         }
+    } else message = "You don't have permission!";
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 
@@ -170,6 +193,9 @@ public class ServiceView extends AppCompatActivity {
                     startActivity(new Intent(getApplicationContext(), OrderView.class));
                     overridePendingTransition(0, 0);
                     return true;
+                case R.id.customers:
+                    startActivity(new Intent(getApplicationContext(), CustomerView.class));
+                    overridePendingTransition(0, 0);
             }
             return false;
         });

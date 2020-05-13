@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">ServiceApp</string>
-    <string name="email">com.example.serviceapp.view.email</string>
     <string name="email1">com.example.serviceapp.view.email1</string>
+    <string name="status">com.example.serviceapp.view.status</string>
 </resources>

@@ -163,6 +163,9 @@ public class OrderView extends AppCompatActivity {
                     startActivity(new Intent(getApplicationContext(), MainActivity.class));
                     overridePendingTransition(0, 0);
                     return true;
+                case R.id.customers:
+                    startActivity(new Intent(getApplicationContext(), CustomerView.class));
+                    overridePendingTransition(0, 0);
             }
             return false;
         });

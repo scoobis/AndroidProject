@@ -63,7 +63,7 @@ public class ServiceController {
         return "Ops, The service was not found!";
     }
 
-    public String deleteService(int id) {
+    public String deleteService(Service service) {
         // TODO call database deleteService
         return "Not done yet!";
     }

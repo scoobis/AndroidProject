@@ -38,6 +38,7 @@ public class LoginView extends AppCompatActivity {
 
         // TODO check if password is correct!
         editor.putString(getString(R.string.email1), editTextEmail.getText().toString());
+        editor.putString(getString(R.string.status), "user"); // TODO get correct status
         editor.commit();
 
     }
