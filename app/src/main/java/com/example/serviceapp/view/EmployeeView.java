@@ -15,6 +15,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.serviceapp.R;
+import com.example.serviceapp.controller.EmployeeController;
+import com.example.serviceapp.model.Admin;
+import com.example.serviceapp.model.Employee;
+import com.example.serviceapp.model.User;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
@@ -29,7 +33,7 @@ public class EmployeeView extends AppCompatActivity {
     private ListView listViewList;
     private ListView listViewDelete;
 
-    private ArrayList<String> employees;
+    private EmployeeController employeeController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,11 +42,11 @@ public class EmployeeView extends AppCompatActivity {
 
         employeeTextView = findViewById(R.id.employeeTextView);
 
+        employeeController = new EmployeeController(this);
+
         setUpListView();
 
         setUpView();
-
-        addEmployeeList();
 
         bottomNavigation();
 
@@ -55,7 +59,35 @@ public class EmployeeView extends AppCompatActivity {
         EditText editTextPhone = findViewById(R.id.editTextPhone);
         EditText editTextStatus = findViewById(R.id.editTextStatus);
 
-        // TODO call create new employee
+        String name = editTextName.getText().toString();
+        String email = editTextEmail.getText().toString();
+        String status = editTextStatus.getText().toString();
+        String phone = editTextPhone.getText().toString();
+
+        String message = "";
+
+        if (status.equalsIgnoreCase("user")) {
+            User user = new User();
+            user.setName(name);
+            user.setEmail(email);
+            user.setPhone(phone);
+            user.setStatus(status);
+            user.setCompanyName("company"); // TODO add company
+            user.setShopId(1); // TODO add shopid
+            message = employeeController.newUser(user);
+        } else if (status.equalsIgnoreCase("admin")) {
+            Admin admin = new Admin(); // TODO add company and shopid
+            admin.setName(name);
+            admin.setEmail(email);
+            admin.setPhone(phone);
+            admin.setStatus(status);
+            admin.setCompanyName("company"); // TODO add company
+            admin.setShopId(1); // TODO add shopid
+            message = employeeController.newAdmin(admin);
+        } else message = "Incorrect status!";
+
+            Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+
     }
 
     public void editClicked(View view) {
@@ -81,35 +113,37 @@ public class EmployeeView extends AppCompatActivity {
     private void deleteEmployee() {
         employeeTextView.setText("Delete Employee");
 
+        ArrayList<Employee> employees = employeeController.getAllEmployees("company");
+
+        ArrayList<String> employeeList = new ArrayList<>();
+
+        for (Employee e : employees) {
+            employeeList.add(e.getName() + "  |  " + e.getStatus());
+        }
+
         listViewDelete.setVisibility(View.VISIBLE);
 
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1, employees);
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1, employeeList);
         listViewDelete.setAdapter(arrayAdapter);
 
-        listViewDelete.setOnItemClickListener((arg0, arg1, position, arg3) -> confirmDeleteEmployee());
+        listViewDelete.setOnItemClickListener((arg0, arg1, position, arg3) -> confirmDeleteEmployee(employees.get(position)));
     }
 
     private void listEmployees() {
         employeeTextView.setText("List Employees");
 
+        ArrayList<Employee> employees = employeeController.getAllEmployees("company");
+
+        ArrayList<String> employeeList = new ArrayList<>();
+
+        for (Employee e : employees) {
+            employeeList.add(e.getName() + "  |  " + e.getStatus());
+        }
+
         listViewList.setVisibility(View.VISIBLE);
 
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1, employees);
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1, employeeList);
         listViewList.setAdapter(arrayAdapter);
-    }
-
-    private void addEmployeeList() {
-        employees = new ArrayList<String>();
-        employees.add("Petter Svensson  |  User");
-        employees.add("Petter Svensson  |  User");
-        employees.add("Petter Svensson  |  User");
-        employees.add("Petter Svensson  |  User");
-        employees.add("Petter Svensson  |  User");
-        employees.add("Petter Svensson  |  User");
-        employees.add("Petter Svensson  |  User");
-        employees.add("Petter Svensson  |  User");
-        employees.add("Petter Svensson  |  User");
-        employees.add("Petter Svensson  |  User");
     }
 
     private void setUpListView() {
@@ -122,13 +156,16 @@ public class EmployeeView extends AppCompatActivity {
         newEmployeeViewEdit = findViewById(R.id.newEmployeeViewEdit);
     }
 
-    private void confirmDeleteEmployee() {
+    private void confirmDeleteEmployee(Employee employeeToDelete) {
         DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
             switch (which){
                 case DialogInterface.BUTTON_POSITIVE:
                     // yes
-                    // TODO call controller delete service
-                    Toast.makeText(getApplicationContext(), "Deleted", Toast.LENGTH_SHORT).show();
+                    String message = employeeController.deleteUser(employeeToDelete);
+                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+
+                    // updated view!
+                    deleteEmployee();
                     break;
 
                 case DialogInterface.BUTTON_NEGATIVE:

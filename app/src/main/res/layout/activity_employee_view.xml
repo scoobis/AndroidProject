@@ -78,7 +78,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="290dp"
             android:ems="10"
-            android:hint="Status"
+            android:hint="Status (user, admin)"
             android:inputType="textPersonName" />
 
         <Button
