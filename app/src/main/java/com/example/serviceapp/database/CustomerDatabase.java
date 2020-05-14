@@ -35,6 +35,7 @@ public class CustomerDatabase extends SQLiteOpenHelper {
         contentValues.put("EMAIL", customer.getEmail());
         contentValues.put("NAME", customer.getName());
         contentValues.put("ADDRESS", customer.getAddress());
+        contentValues.put("COMPANY_NAME", customer.getCompany());
 
 
         long result = db.insert("customer", null, contentValues);
@@ -66,5 +67,17 @@ public class CustomerDatabase extends SQLiteOpenHelper {
     public boolean deleteCustomer(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete("customer", "id =" + id, null) > 0;
+    }
+
+    public boolean editCustomer(Customer customer) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues cv = new ContentValues();
+        cv.put("PHONE", customer.getPhone());
+        cv.put("EMAIL", customer.getEmail());
+        cv.put("NAME", customer.getName());
+        cv.put("ADDRESS", customer.getAddress());
+
+        return db.update("customer", cv, "id=" + customer.getId(), null) > 0;
     }
 }

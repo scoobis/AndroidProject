@@ -7,12 +7,14 @@ public class Customer {
     private String phone;
     private String name;
     private String address;
-    private String password; // Added password to customer, when registering a customer use the PasswordHashed to immidietaly hash the password.
     private boolean active;
+    private String company;
 
     public String getEmail() {
         return email;
     }
+
+    public String getCompany() { return company; }
 
     public void setEmail(String email) {
         this.email = email;
@@ -50,19 +52,13 @@ public class Customer {
         this.phone = phone;
     }
 
+    public void setCompany(String company) { this.company = company; }
+
     public boolean isActive() {
         return active;
     }
 
     public void setActive(boolean active) {
         this.active = active;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 }

@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
@@ -79,6 +80,7 @@ public class ServiceView extends AppCompatActivity {
         newServiceView.setVisibility(View.VISIBLE);
         postBtn.setVisibility(View.VISIBLE);
         postBtn.setText("Edit");
+        serviceTextView.setPaintFlags(serviceTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
     }
 
     private void deleteService() {
@@ -210,6 +212,7 @@ public class ServiceView extends AppCompatActivity {
             listViewDelete.setVisibility(View.GONE);
             newServiceView.setVisibility(View.GONE);
             postBtn.setVisibility(View.GONE);
+            serviceTextView.setPaintFlags( serviceTextView.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
 
             switch (menuItem.getItemId()) {
                 case R.id.new_nav:

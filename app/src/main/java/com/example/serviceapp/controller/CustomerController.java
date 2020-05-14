@@ -15,14 +15,19 @@ public class CustomerController {
         customerDatabase = new CustomerDatabase(context);
     }
 
-    public String createCustomer(Customer customer) {
+    public String createCustomer(String name, String email, String phone, String address, String company) {
 
-        if (customer.getName().equalsIgnoreCase("")) return "Name is missing!";
-        if (customer.getEmail().equalsIgnoreCase("")) return "Email is missing!";
-        if (customer.getAddress().equalsIgnoreCase("")) return "Phone is missing!";
-        if (customer.getAddress().equalsIgnoreCase("")) return "Address is missing!";
+        if (name.equalsIgnoreCase("")) return "Name is missing!";
+        else if (email.equalsIgnoreCase("")) return "Email is missing!";
+        else if (phone.equalsIgnoreCase("")) return "Phone is missing!";
+        else if (address.equalsIgnoreCase("")) return "Address is missing!";
 
-        // TODO customer need to belong to a company
+        Customer customer = new Customer();
+        customer.setName(name);
+        customer.setEmail(email);
+        customer.setPhone(phone);
+        customer.setAddress(address);
+        customer.setCompany(company);
 
         boolean customerIsSaved = customerDatabase.saveCustomer(customer);
 
@@ -38,17 +43,23 @@ public class CustomerController {
         return "ops, something went wrong!";
     }
 
-    public String editCustomer(Customer customer) {
+    public String editCustomer(String name, String email, String phone, String address, int id) {
+        if (name.equalsIgnoreCase("")) return "Name is missing!";
+        else if (email.equalsIgnoreCase("")) return "Email is missing!";
+        else if (phone.equalsIgnoreCase("")) return "Phone is missing!";
+        else if (address.equalsIgnoreCase("")) return "Address is missing!";
 
-        if (customer.getName().equalsIgnoreCase("")) return "Name is missing!";
-        if (customer.getEmail().equalsIgnoreCase("")) return "Email is missing!";
-        if (customer.getAddress().equalsIgnoreCase("")) return "Phone is missing!";
-        if (customer.getAddress().equalsIgnoreCase("")) return "Address is missing!";
+        Customer customer = new Customer();
+        customer.setName(name);
+        customer.setEmail(email);
+        customer.setPhone(phone);
+        customer.setAddress(address);
+        customer.setId(id);
 
-        // TODO customer need to belong to a company
+        boolean isDeleted = customerDatabase.editCustomer(customer);
 
-        // TODO edit customer in database
-        return "Database not done!";
+        if (isDeleted) return customer.getName() + " Edited!";
+        return "ops, something went wrong!";
 
     }
 

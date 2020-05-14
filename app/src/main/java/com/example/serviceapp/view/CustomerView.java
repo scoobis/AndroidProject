@@ -179,13 +179,14 @@ public class CustomerView extends AppCompatActivity {
             intent.putExtra("email", customers.get(position).getEmail());
             intent.putExtra("phone", customers.get(position).getPhone());
             intent.putExtra("address", customers.get(position).getAddress());
+            intent.putExtra("id", customers.get(position).getId());
             startActivity(intent);
             overridePendingTransition(0, 0);
         });
     }
 
     public void editClicked(View view) {
-
+        Toast.makeText(getApplicationContext(), "This functionality is not used anymore, checkout the list!", Toast.LENGTH_LONG).show();
     }
 
     public void newClicked(View view) {
@@ -194,15 +195,13 @@ public class CustomerView extends AppCompatActivity {
         editTextPhone = findViewById(R.id.editTextPhone);
         editTextAddress = findViewById(R.id.editTextAddress);
 
-        Customer customer = new Customer();
-        customer.setName(editTextName.getText().toString());
-        customer.setEmail(editTextEmail.getText().toString());
-        customer.setPhone(editTextPhone.getText().toString());
-        customer.setAddress(editTextAddress.getText().toString());
+        String name = editTextName.getText().toString();
+        String email = editTextEmail.getText().toString();
+        String phone = editTextPhone.getText().toString();
+        String address = editTextAddress.getText().toString();
+        String company = "company"; //TODO add company
 
-        System.out.println("name: "+ customer.getName() + " email " + customer.getEmail() + " " + customer.getPhone() + customer.getAddress());
-
-        String message = customerController.createCustomer(customer);
+        String message = customerController.createCustomer(name, email, phone, address, company);
 
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }

@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -63,13 +64,7 @@ public class OrderView extends AppCompatActivity {
     }
 
     public void editClicked(View view) {
-        EditText order = findViewById(R.id.editTextOrder);
-        EditText customer = findViewById(R.id.editTextCustomerEdit);
-        EditText service = findViewById(R.id.editTextPriceEdit);
-        EditText price = findViewById(R.id.editTextPriceEdit);
-
-        // TODO call edit order
-
+        Toast.makeText(getApplicationContext(), "This functionality is not used anymore, checkout the list!", Toast.LENGTH_LONG).show();
     }
 
 
@@ -81,6 +76,7 @@ public class OrderView extends AppCompatActivity {
     private void editOrder() {
         orderTextView.setText("Edit Order");
         editOrderView.setVisibility(View.VISIBLE);
+        orderTextView.setPaintFlags(orderTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
     }
 
     private void deleteOrder() {
@@ -180,6 +176,7 @@ public class OrderView extends AppCompatActivity {
             editOrderView.setVisibility(View.GONE);
             listViewDelete.setVisibility(View.GONE);
             listViewList.setVisibility(View.GONE);
+            orderTextView.setPaintFlags( orderTextView.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
 
             switch (menuItem.getItemId()) {
                 case R.id.new_nav:

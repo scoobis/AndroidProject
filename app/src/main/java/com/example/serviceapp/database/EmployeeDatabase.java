@@ -52,6 +52,24 @@ public class EmployeeDatabase extends SQLiteOpenHelper {
         else return true;
     }
 
+    public boolean saveAdmin(Admin admin) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put("COMPANY_NAME", admin.getCompanyName());
+        contentValues.put("SHOP_ID", admin.getShopId());
+        contentValues.put("PHONE", admin.getPhone());
+        contentValues.put("EMAIL", admin.getEmail());
+        contentValues.put("STATUS", admin.getStatus());
+        contentValues.put("NAME", admin.getName());
+        // TODO add password!
+
+        long result = db.insert("admin", null, contentValues);
+
+        if (result == -1) return false;
+        else return true;
+    }
+
     public ArrayList<Employee> getAllEmployees(String companyName) {
         ArrayList<Employee> employees = new ArrayList<>();
 
@@ -78,5 +96,34 @@ public class EmployeeDatabase extends SQLiteOpenHelper {
     public boolean deleteUser(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete("user", "id =" + id, null) > 0;
+    }
+
+    public boolean deleteAdmin(int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete("admin", "id =" + id, null) > 0;
+    }
+
+    public boolean editAdmin(Admin admin) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues cv = new ContentValues();
+        cv.put("PHONE", admin.getPhone());
+        cv.put("EMAIL", admin.getEmail());
+        cv.put("NAME", admin.getName());
+        cv.put("SHOP_ID", admin.getShopId());
+
+        return db.update("admin", cv, "id=" + admin.getId(), null) > 0;
+    }
+
+    public boolean editUser(User user) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues cv = new ContentValues();
+        cv.put("PHONE", user.getPhone());
+        cv.put("EMAIL", user.getEmail());
+        cv.put("NAME", user.getName());
+        cv.put("SHOP_ID", user.getShopId());
+
+        return db.update("user", cv, "id=" + user.getId(), null) > 0;
     }
 }

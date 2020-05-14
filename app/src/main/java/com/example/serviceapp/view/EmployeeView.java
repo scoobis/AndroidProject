@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -16,9 +17,7 @@ import android.widget.Toast;
 
 import com.example.serviceapp.R;
 import com.example.serviceapp.controller.EmployeeController;
-import com.example.serviceapp.model.Admin;
 import com.example.serviceapp.model.Employee;
-import com.example.serviceapp.model.User;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
@@ -67,23 +66,9 @@ public class EmployeeView extends AppCompatActivity {
         String message = "";
 
         if (status.equalsIgnoreCase("user")) {
-            User user = new User();
-            user.setName(name);
-            user.setEmail(email);
-            user.setPhone(phone);
-            user.setStatus(status);
-            user.setCompanyName("company"); // TODO add company
-            user.setShopId(1); // TODO add shopid
-            message = employeeController.newUser(user);
+            message = employeeController.newUser(name, email, phone, "company", 1); // TODO add shopId and company
         } else if (status.equalsIgnoreCase("admin")) {
-            Admin admin = new Admin(); // TODO add company and shopid
-            admin.setName(name);
-            admin.setEmail(email);
-            admin.setPhone(phone);
-            admin.setStatus(status);
-            admin.setCompanyName("company"); // TODO add company
-            admin.setShopId(1); // TODO add shopid
-            message = employeeController.newAdmin(admin);
+            message = employeeController.newAdmin(name, email, phone, "company", 1); // TODO add shopId and company
         } else message = "Incorrect status!";
 
             Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
@@ -91,13 +76,7 @@ public class EmployeeView extends AppCompatActivity {
     }
 
     public void editClicked(View view) {
-        EditText employee = findViewById(R.id.editTextEmployee);
-        EditText name = findViewById(R.id.editTextNameEdit);
-        EditText email = findViewById(R.id.editTextEmailEdit);
-        EditText phone = findViewById(R.id.editTextPhoneEdit);
-        EditText status = findViewById(R.id.editTextStatusEdit);
-
-        // TODO call edit employee
+        Toast.makeText(getApplicationContext(), "This functionality is not used anymore, checkout the list!", Toast.LENGTH_LONG).show();
     }
 
     private void newEmployee() {
@@ -108,6 +87,7 @@ public class EmployeeView extends AppCompatActivity {
     private void editEmployee() {
         employeeTextView.setText("Edit Employee");
         newEmployeeViewEdit.setVisibility(View.VISIBLE);
+        employeeTextView.setPaintFlags(employeeTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
     }
 
     private void deleteEmployee() {
@@ -144,6 +124,19 @@ public class EmployeeView extends AppCompatActivity {
 
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1, employeeList);
         listViewList.setAdapter(arrayAdapter);
+
+        listViewList.setOnItemClickListener((arg0, arg1, position, arg3) -> {
+            Intent intent = new Intent(getApplicationContext(), SpecificEmployeeView.class);
+            intent.putExtra("name", employees.get(position).getName());
+            intent.putExtra("email", employees.get(position).getEmail());
+            intent.putExtra("phone", employees.get(position).getPhone());
+            intent.putExtra("id", employees.get(position).getId());
+            intent.putExtra("shopId", employees.get(position).getShopId());
+            intent.putExtra("status", employees.get(position).getStatus());
+            intent.putExtra("company", employees.get(position).getCompanyName());
+            startActivity(intent);
+            overridePendingTransition(0, 0);
+        });
     }
 
     private void setUpListView() {
@@ -161,7 +154,12 @@ public class EmployeeView extends AppCompatActivity {
             switch (which){
                 case DialogInterface.BUTTON_POSITIVE:
                     // yes
-                    String message = employeeController.deleteUser(employeeToDelete);
+                    String message = "Ops, something went wrong!";
+                    if (employeeToDelete.getStatus().equalsIgnoreCase("user")) {
+                        message = employeeController.deleteUser(employeeToDelete);
+                    } else if (employeeToDelete.getStatus().equalsIgnoreCase("admin")) {
+                        message = employeeController.deleteAdmin(employeeToDelete);
+                    }
                     Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 
                     // updated view!
@@ -216,6 +214,7 @@ public class EmployeeView extends AppCompatActivity {
             newEmployeeViewEdit.setVisibility(View.GONE);
             listViewList.setVisibility(View.GONE);
             listViewDelete.setVisibility(View.GONE);
+            employeeTextView.setPaintFlags( employeeTextView.getPaintFlags() & (~ Paint.STRIKE_THRU_TEXT_FLAG));
 
             switch (menuItem.getItemId()) {
                 case R.id.new_nav:

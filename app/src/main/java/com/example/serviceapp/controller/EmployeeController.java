@@ -17,11 +17,18 @@ public class EmployeeController {
         employeeDatabase = new EmployeeDatabase(context);
     }
 
-    public String newUser(User user) {
+    public String newUser(String name, String email, String phone, String companyName, int shopId) {
+        if (name.equalsIgnoreCase("")) return "Name is missing!";
+        else if (email.equalsIgnoreCase("")) return "Email is missing!";
+        else if (phone.equalsIgnoreCase("")) return "Phone is missing!";
+        else if (shopId == 0 || companyName.equalsIgnoreCase("")) return "ops, something went wrong!";
 
-        if (user.getName().equalsIgnoreCase("")) return "Name is missing!";
-        if (user.getEmail().equalsIgnoreCase("")) return "Email is missing!";
-        if (user.getPhone().equalsIgnoreCase("")) return "Phone is missing!";
+        User user = new User();
+        user.setName(name);
+        user.setEmail(email);
+        user.setPhone(phone);
+        user.setCompanyName(companyName);
+        user.setShopId(shopId);
 
         boolean isSaved = employeeDatabase.saveUser(user);
 
@@ -40,20 +47,66 @@ public class EmployeeController {
         return "ops, something went wrong!";
     }
 
-    public User editUser(String id, User newUser) {
-        return null;
+    public String editUser(String phone, String email, String name, int shopId, int id) {
+        if (name.equalsIgnoreCase("")) return "Name is missing!";
+        else if (email.equalsIgnoreCase("")) return "Email is missing!";
+        else if (phone.equalsIgnoreCase("")) return "Phone is missing!";
+        else if (shopId == 0) return "ops, something went wrong!";
+
+        User user = new User();
+        user.setPhone(phone);
+        user.setEmail(email);
+        user.setName(name);
+        user.setShopId(shopId);
+        user.setId(id);
+
+        boolean isEdited = employeeDatabase.editUser(user);
+        if (isEdited) return "User edited successfully";
+        return "Ops, something went wrong!";
     }
 
-    public String newAdmin(Admin a) {
-        return "";
+    public String newAdmin(String name, String email, String phone, String companyName, int shopId) {
+        if (name.equalsIgnoreCase("")) return "Name is missing!";
+        else if (email.equalsIgnoreCase("")) return "Email is missing!";
+        else if (phone.equalsIgnoreCase("")) return "Phone is missing!";
+        else if (shopId == 0 || companyName.equalsIgnoreCase("")) return "ops, something went wrong!";
+
+        Admin admin = new Admin();
+        admin.setName(name);
+        admin.setEmail(email);
+        admin.setPhone(phone);
+        admin.setCompanyName(companyName);
+        admin.setShopId(shopId);
+
+        boolean isSaved = employeeDatabase.saveAdmin(admin);
+
+        if (!isSaved) return "ops, something went wrong!";
+        return "Admin created successfully";
     }
 
-    public void deleteAdmin(String id) {
+    public String deleteAdmin(Employee e) {
+        boolean isDeleted = employeeDatabase.deleteAdmin(e.getId());
 
+        if (isDeleted) return e.getName() + " Deleted!";
+        return "ops, something went wrong!";
     }
 
-    public Admin editAdmin(String id, Admin newAdmin) {
-        return null;
+    public String editAdmin(String phone, String email, String name, int shopId, int id) {
+        if (name.equalsIgnoreCase("")) return "Name is missing!";
+        else if (email.equalsIgnoreCase("")) return "Email is missing!";
+        else if (phone.equalsIgnoreCase("")) return "Phone is missing!";
+        else if (shopId == 0) return "ops, something went wrong!";
+
+        Admin admin = new Admin();
+        admin.setPhone(phone);
+        admin.setEmail(email);
+        admin.setName(name);
+        admin.setShopId(shopId);
+        admin.setId(id);
+
+        boolean isEdited = employeeDatabase.editAdmin(admin);
+        if (isEdited) return "Admin edited successfully";
+        return "Ops, something went wrong!";
     }
 
     public void listEmployees() {

@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.SpecificCustomerView">
+    tools:context=".view.SpecificEmployeeView">
 
     <EditText
         android:id="@+id/editTextName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="70dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="40dp"
         android:layout_marginEnd="70dp"
         android:hint="Name"
         android:textAlignment="center"
@@ -24,7 +24,7 @@
         android:id="@+id/textViewEmailHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="130dp"
         android:text="Email"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
@@ -37,7 +37,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="70dp"
-        android:layout_marginTop="200dp"
+        android:layout_marginTop="170dp"
         android:layout_marginEnd="70dp"
         android:hint="Email"
         android:inputType="textEmailAddress"
@@ -52,7 +52,7 @@
         android:id="@+id/textViewPhoneHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="270dp"
+        android:layout_marginTop="230dp"
         android:text="Phone"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
@@ -65,7 +65,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="70dp"
-        android:layout_marginTop="320dp"
+        android:layout_marginTop="270dp"
         android:layout_marginEnd="70dp"
         android:hint="Phone"
         android:inputType="phone"
@@ -77,11 +77,11 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textViewAddressHeader"
+        android:id="@+id/textViewCompanyHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="390dp"
-        android:text="Address"
+        android:layout_marginTop="330dp"
+        android:text="Company"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:textSize="30sp"
@@ -89,14 +89,42 @@
         tools:layout_editor_absoluteX="175dp" />
 
     <EditText
-        android:id="@+id/editTextAddress"
+        android:id="@+id/editTextCompany"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="70dp"
-        android:layout_marginTop="440dp"
+        android:layout_marginTop="370dp"
         android:layout_marginEnd="70dp"
-        android:hint="Address"
-        android:inputType="textPostalAddress"
+        android:hint="Company"
+        android:inputType="numberSigned"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textViewShopHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="430dp"
+        android:text="Shop Id"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:textSize="30sp"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="175dp" />
+
+    <EditText
+        android:id="@+id/editTextShop"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="70dp"
+        android:layout_marginTop="470dp"
+        android:layout_marginEnd="70dp"
+        android:hint="Shop id"
+        android:inputType="number"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textSize="18sp"
@@ -110,12 +138,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="100dp"
-        android:layout_marginTop="90dp"
+        android:layout_marginTop="50dp"
         android:layout_marginEnd="100dp"
         android:text="Edit"
         android:textSize="18sp"
         android:onClick="editClicked"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextAddress" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextShop" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
