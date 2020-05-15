@@ -2,8 +2,8 @@ package com.example.serviceapp.model;
 
 public class Admin extends Employee {
 
-    public Admin(String phone, String email, String name, String company, int shopId, int id) {
-        super(phone, email, name, company, shopId, id);
+    public Admin(String phone, String email, String name, String company, int shopId, int id, String password) {
+        super(phone, email, name, company, shopId, id, password);
 
         this.setStatus("admin");
     }

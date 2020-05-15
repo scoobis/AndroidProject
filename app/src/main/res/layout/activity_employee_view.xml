@@ -81,12 +81,30 @@
             android:hint="Status (user, admin)"
             android:inputType="textPersonName" />
 
+        <EditText
+            android:id="@+id/editTextPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="360dp"
+            android:ems="10"
+            android:hint="Password"
+            android:inputType="textPassword" />
+
+        <EditText
+            android:id="@+id/editTextShop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="430dp"
+            android:ems="10"
+            android:hint="Shop Id"
+            android:inputType="number" />
+
         <Button
             android:id="@+id/postBtn"
             style="@android:style/Widget.Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="410dp"
+            android:layout_marginTop="500dp"
             android:onClick="newClicked"
             android:text="New"
             android:textSize="18sp" />

@@ -17,16 +17,18 @@ public class EmployeeController {
         employeeDatabase = new EmployeeDatabase(context);
     }
 
-    public String newUser(String name, String email, String phone, String companyName, int shopId) {
+    public String newUser(String name, String email, String phone, String password, String companyName, int shopId) {
         if (name.equalsIgnoreCase("")) return "Name is missing!";
         else if (email.equalsIgnoreCase("")) return "Email is missing!";
         else if (phone.equalsIgnoreCase("")) return "Phone is missing!";
         else if (shopId == 0 || companyName.equalsIgnoreCase("")) return "ops, something went wrong!";
+        else  if (password.equalsIgnoreCase("")) return "Password is missing!";
 
         User user = new User();
         user.setName(name);
         user.setEmail(email);
         user.setPhone(phone);
+        user.setPassword(password);
         user.setCompanyName(companyName);
         user.setShopId(shopId);
 
@@ -65,16 +67,18 @@ public class EmployeeController {
         return "Ops, something went wrong!";
     }
 
-    public String newAdmin(String name, String email, String phone, String companyName, int shopId) {
+    public String newAdmin(String name, String email, String phone, String password, String companyName, int shopId) {
         if (name.equalsIgnoreCase("")) return "Name is missing!";
         else if (email.equalsIgnoreCase("")) return "Email is missing!";
         else if (phone.equalsIgnoreCase("")) return "Phone is missing!";
         else if (shopId == 0 || companyName.equalsIgnoreCase("")) return "ops, something went wrong!";
+        else if (password.equalsIgnoreCase("")) return "Password is missing!";
 
         Admin admin = new Admin();
         admin.setName(name);
         admin.setEmail(email);
         admin.setPhone(phone);
+        admin.setPassword(password);
         admin.setCompanyName(companyName);
         admin.setShopId(shopId);
 

@@ -2,4 +2,5 @@
     <string name="app_name">ServiceApp</string>
     <string name="email1">com.example.serviceapp.view.email1</string>
     <string name="status">com.example.serviceapp.view.status</string>
+    <string name="company">com.example.serviceapp.view.company</string>
 </resources>

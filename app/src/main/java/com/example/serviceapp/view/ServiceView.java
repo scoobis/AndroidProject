@@ -33,9 +33,6 @@ public class ServiceView extends AppCompatActivity {
 
     private FrameLayout newServiceView;
 
-    private ArrayList<Service> services;
-    private ArrayList<String> serviceList;
-
     private ServiceController serviceController;
 
     private Button postBtn;
@@ -49,7 +46,7 @@ public class ServiceView extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_service_view);
 
-        serviceController = new ServiceController();
+        serviceController = new ServiceController(this);
 
         serviceTextView = findViewById(R.id.serviceTextView);
 
@@ -59,8 +56,6 @@ public class ServiceView extends AppCompatActivity {
         newServiceView = findViewById(R.id.newServiceView);
 
         postBtn = findViewById(R.id.postBtn);
-
-        addServiceList();
 
         bottomNavigation();
 
@@ -75,7 +70,6 @@ public class ServiceView extends AppCompatActivity {
     }
 
     private void editService() {
-        // TODO change view!
         serviceTextView.setText("Edit Service");
         newServiceView.setVisibility(View.VISIBLE);
         postBtn.setVisibility(View.VISIBLE);
@@ -85,19 +79,39 @@ public class ServiceView extends AppCompatActivity {
 
     private void deleteService() {
         serviceTextView.setText("Delete Service");
-
         listViewDelete.setVisibility(View.VISIBLE);
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String companyName = sharedPreferences.getString(getString(R.string.company), "");
+
+        ArrayList<Service> services = serviceController.getAllServices(companyName);
+
+        ArrayList<String> serviceList = new ArrayList<>();
+
+        for (Service s : services) {
+            serviceList.add(s.getTitle() + "  |  $" + s.getPrice());
+        }
 
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1, serviceList);
         listViewDelete.setAdapter(arrayAdapter);
 
-        listViewDelete.setOnItemClickListener((arg0, arg1, position, arg3) -> confirmDeleteService());
+        listViewDelete.setOnItemClickListener((arg0, arg1, position, arg3) -> confirmDeleteService(services.get(position)));
     }
 
     private void listServices() {
         serviceTextView.setText("List Service");
-
         listViewList.setVisibility(View.VISIBLE);
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String companyName = sharedPreferences.getString(getString(R.string.company), "");
+
+        ArrayList<Service> services = serviceController.getAllServices(companyName);
+
+        ArrayList<String> serviceList = new ArrayList<>();
+
+        for (Service s : services) {
+            serviceList.add(s.getTitle() + "  |  $" + s.getPrice());
+        }
 
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_expandable_list_item_1, serviceList);
         listViewList.setAdapter(arrayAdapter);
@@ -105,19 +119,25 @@ public class ServiceView extends AppCompatActivity {
         listViewList.setOnItemClickListener((arg0, arg1, position, arg3) -> {
             Intent intent = new Intent(getApplicationContext(), SpecificServiceView.class);
             intent.putExtra("description", services.get(position).getDescription());
+            intent.putExtra("title", services.get(position).getTitle());
             intent.putExtra("price", Integer.toString(services.get(position).getPrice()));
+            intent.putExtra("serviceId", services.get(position).getId());
+            intent.putExtra("company", companyName);
             startActivity(intent);
             overridePendingTransition(0, 0);
         });
     }
 
-    private void confirmDeleteService() {
+    private void confirmDeleteService(Service serviceToDelete) {
         DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
             switch (which){
                 case DialogInterface.BUTTON_POSITIVE:
                     // yes
-                    String message = serviceController.deleteService(new Service()); // TODO remove correct service
+                    String message = serviceController.deleteService(serviceToDelete);
                     Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+
+                    // updated view!
+                    deleteService();
                     break;
 
                 case DialogInterface.BUTTON_NEGATIVE:
@@ -135,43 +155,33 @@ public class ServiceView extends AppCompatActivity {
         EditText editTextTitle = findViewById(R.id.editTextTitle);
         EditText editTextPrice = findViewById(R.id.editTextPrice);
         EditText editTextDescription = findViewById(R.id.editTextDescription);
+
         String message = "";
+
+        String description = editTextDescription.getText().toString();
+        String title = editTextTitle.getText().toString();
 
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         editor = sharedPreferences.edit();
 
         String status = sharedPreferences.getString(getString(R.string.status), "");
+        String company = sharedPreferences.getString(getString(R.string.company), "");
 
-        int price = 0;
+        int price;
         if (editTextPrice.getText().toString().equalsIgnoreCase("")) price = -1;
-        else Integer.parseInt(editTextPrice.getText().toString());
+        else price = Integer.parseInt(editTextPrice.getText().toString());
 
-        // Make sure the employee have permission to edit / create services
+
         if (status.equalsIgnoreCase("admin") || status.equalsIgnoreCase("super_admin")) {
+
             if (postBtn.getText().toString().equalsIgnoreCase("new")) {
-            // Success or fail message!
-            message = serviceController.newService("My-Company", editTextTitle.getText().toString(), // TODO add company name!
-                    editTextDescription.getText().toString(), price);
-        } else {
-            Service service = new Service();
-            service.setCompany("My-Company"); // TODO set company
-            service.setTitle(editTextTitle.getText().toString());
-            service.setDescription(editTextDescription.getText().toString());
-            service.setPrice(price);
-            message = serviceController.editService(service);
+
+            message = serviceController.newService(company, title, description, price);
+
         }
     } else message = "You don't have permission!";
+
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-    }
-
-    private  void addServiceList() {
-        services = serviceController.getAllServices();
-
-        serviceList = new ArrayList<>();
-
-        for (int i = 0; i < services.size(); i++) {
-            serviceList.add(services.get(i).getTitle() + "  |  $" + services.get(i).getPrice());
-        }
     }
 
     private void bottomNavigation() {

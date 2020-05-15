@@ -43,7 +43,7 @@ public class EmployeeDatabase extends SQLiteOpenHelper {
         contentValues.put("EMAIL", user.getEmail());
         contentValues.put("STATUS", user.getStatus());
         contentValues.put("NAME", user.getName());
-        // TODO add password!
+        contentValues.put("PASSWORD", user.getPassword());
 
 
         long result = db.insert("user", null, contentValues);
@@ -62,7 +62,7 @@ public class EmployeeDatabase extends SQLiteOpenHelper {
         contentValues.put("EMAIL", admin.getEmail());
         contentValues.put("STATUS", admin.getStatus());
         contentValues.put("NAME", admin.getName());
-        // TODO add password!
+        contentValues.put("PASSWORD", admin.getPassword());
 
         long result = db.insert("admin", null, contentValues);
 
@@ -82,10 +82,10 @@ public class EmployeeDatabase extends SQLiteOpenHelper {
 
         while(data.moveToNext()) {
             if (data.getString(6).equalsIgnoreCase("user")) {
-                User user = new User(data.getString(3), data.getString(4), data.getString(7), data.getString(1), data.getInt(2), data.getInt(0));
+                User user = new User(data.getString(3), data.getString(4), data.getString(7), data.getString(1), data.getInt(2), data.getInt(0), data.getString(5));
                 employees.add(user);
             } else if (data.getString(6).equalsIgnoreCase("admin")) {
-                Admin admin = new Admin(data.getString(3), data.getString(4), data.getString(7), data.getString(1), data.getInt(2), data.getInt(0));
+                Admin admin = new Admin(data.getString(3), data.getString(4), data.getString(7), data.getString(1), data.getInt(2), data.getInt(0), data.getString(5));
                 employees.add(admin);
             }
             // TODO should we get super_admin?

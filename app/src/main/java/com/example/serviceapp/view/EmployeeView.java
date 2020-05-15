@@ -5,8 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -57,18 +59,25 @@ public class EmployeeView extends AppCompatActivity {
         EditText editTextEmail = findViewById(R.id.editTextEmail);
         EditText editTextPhone = findViewById(R.id.editTextPhone);
         EditText editTextStatus = findViewById(R.id.editTextStatus);
+        EditText editTextPassword = findViewById(R.id.editTextPassword);
+        EditText editTextShop = findViewById(R.id.editTextShop);
 
         String name = editTextName.getText().toString();
         String email = editTextEmail.getText().toString();
         String status = editTextStatus.getText().toString();
         String phone = editTextPhone.getText().toString();
+        String password = editTextPassword.getText().toString();
+        int shopId = Integer.parseInt(editTextShop.getText().toString());
 
         String message = "";
 
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String companyName = sharedPreferences.getString(getString(R.string.company), "");
+
         if (status.equalsIgnoreCase("user")) {
-            message = employeeController.newUser(name, email, phone, "company", 1); // TODO add shopId and company
+            message = employeeController.newUser(name, email, phone, password, companyName, shopId);
         } else if (status.equalsIgnoreCase("admin")) {
-            message = employeeController.newAdmin(name, email, phone, "company", 1); // TODO add shopId and company
+            message = employeeController.newAdmin(name, email, phone, password, companyName, shopId);
         } else message = "Incorrect status!";
 
             Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();

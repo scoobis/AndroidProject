@@ -4,7 +4,7 @@ public class Service {
     private String company;
     private String title;
     private String description;
-    private String id;
+    private int id;
     private int price;
 
     public String getCompany() {
@@ -25,10 +25,10 @@ public class Service {
     public void setDescription(String description) {
         this.description = description;
     }
-    public String getId() {
+    public int getId() {
         return id;
     }
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
     public int getPrice() {

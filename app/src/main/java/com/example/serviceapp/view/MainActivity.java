@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences.Editor editor;
 
     private String email = "";
+    private String companyName = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         shopTextView = findViewById(R.id.shopTextView);
         loggedInAsTextView = findViewById(R.id.loggedInAsTextView);
 
-        companyTextView.setText("My-Company-Name.inc"); // TODO get company name
+        companyTextView.setText(companyName);
         shopTextView.setText("My-Shop-Name"); // TODO get shop
         loggedInAsTextView.setText(email);
     }
@@ -152,8 +153,9 @@ public class MainActivity extends AppCompatActivity {
         editor = sharedPreferences.edit();
 
         email = sharedPreferences.getString(getString(R.string.email1), "");
+        companyName = sharedPreferences.getString(getString(R.string.company), "");
 
-        if (!email.equalsIgnoreCase("test@email")) {
+        if (email.equalsIgnoreCase("")) {
             startActivity(new Intent(getApplicationContext(), LoginView.class));
             overridePendingTransition(0, 0);
         }

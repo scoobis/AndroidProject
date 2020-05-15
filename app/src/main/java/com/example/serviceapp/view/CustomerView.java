@@ -5,8 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -199,7 +201,9 @@ public class CustomerView extends AppCompatActivity {
         String email = editTextEmail.getText().toString();
         String phone = editTextPhone.getText().toString();
         String address = editTextAddress.getText().toString();
-        String company = "company"; //TODO add company
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String company = sharedPreferences.getString(getString(R.string.company), "");
 
         String message = customerController.createCustomer(name, email, phone, address, company);
 

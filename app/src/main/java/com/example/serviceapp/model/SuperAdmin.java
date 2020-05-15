@@ -2,12 +2,13 @@ package com.example.serviceapp.model;
 
     public class SuperAdmin extends Employee {
 
-        public SuperAdmin(String phone, String email, String name, String company) {
+        public SuperAdmin(String phone, String email, String name, String company, String password) {
             super();
             this.setPhone(phone);
             this.setEmail(email);
             this.setName(name);
             this.setCompanyName(company);
+            this.setPassword(password);
 
             this.setStatus("super_admin");
         }
