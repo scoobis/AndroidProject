@@ -49,7 +49,7 @@ public class EmployeeDatabase extends SQLiteOpenHelper {
         long result = db.insert("user", null, contentValues);
 
         if (result == -1) return false;
-        else return true;
+        return true;
     }
 
     public boolean saveAdmin(Admin admin) {
