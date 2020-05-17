@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ListView;
@@ -38,6 +39,7 @@ import java.util.Date;
 public class OrderView extends AppCompatActivity {
 
     private TextView orderTextView;
+    private TextView isCompletedTextView;
 
     private FrameLayout editOrderView;
     private FrameLayout newOrderView;
@@ -48,9 +50,12 @@ public class OrderView extends AppCompatActivity {
     private EditText editTextPrice;
 
     private Switch switch1;
+    private boolean showCompleteOrders = false;
 
     private int serviceId = -1;
     private int customerId = -1;
+
+    ArrayAdapter<String> arrayAdapter;
 
     private CustomerController customerController;
     private ServiceController serviceController;
@@ -67,6 +72,8 @@ public class OrderView extends AppCompatActivity {
 
         editTextPrice = findViewById(R.id.editTextPrice);
 
+        isCompletedTextView = findViewById(R.id.isCompletedTextView);
+
         orderTextView = findViewById(R.id.orderTextView);
 
         switch1 = findViewById(R.id.switch1);
@@ -81,6 +88,20 @@ public class OrderView extends AppCompatActivity {
         bottomNavigation();
 
         topNavigation();
+
+        switch1.setOnCheckedChangeListener((CompoundButton btn, boolean isChecked) -> {
+            if (isChecked) {
+                showCompleteOrders = true;
+                isCompletedTextView.setText("Completed Orders");
+            }
+            else {
+                showCompleteOrders = false;
+                isCompletedTextView.setText("NOT Completed Orders");
+            }
+
+            // update view
+            displayList();
+        });
     }
 
     public void newClicked(View view) {
@@ -181,21 +202,9 @@ public class OrderView extends AppCompatActivity {
         listViewDelete.setVisibility(View.VISIBLE);
         switch1.setVisibility(View.VISIBLE);
 
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String company = sharedPreferences.getString(getString(R.string.company), "");
+        displayList();
 
-        ArrayList<Order> orders = orderController.getAllOrders(company);
-
-        ArrayList<String> orderList = new ArrayList<>();
-
-        for (Order o : orders) {
-            orderList.add(o.getDate() + "  |  $" + o.getPrice());
-        }
-
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1, orderList);
-        listViewDelete.setAdapter(arrayAdapter);
-
-        listViewDelete.setOnItemClickListener((arg0, arg1, position, arg3) -> confirmDeleteOrder(orders.get(position)));
+        // delete is comes from display list
     }
 
     private void listOrders() {
@@ -203,19 +212,35 @@ public class OrderView extends AppCompatActivity {
         switch1.setVisibility(View.VISIBLE);
         listViewList.setVisibility(View.VISIBLE);
 
+        displayList();
+    }
+
+    private void displayList() {
+        isCompletedTextView.setVisibility(View.VISIBLE);
+
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         String company = sharedPreferences.getString(getString(R.string.company), "");
 
         ArrayList<Order> orders = orderController.getAllOrders(company);
+        ArrayList<Order> specificOrders = new ArrayList<>();
 
         ArrayList<String> orderList = new ArrayList<>();
 
         for (Order o : orders) {
-            orderList.add(o.getDate() + "  |  $" + o.getPrice());
+            if (showCompleteOrders == o.getCompleted()) {
+                orderList.add(o.getDate() + "  |  $" + o.getPrice());
+                specificOrders.add(o);
+            }
         }
 
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1, orderList);
+        arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1, orderList);
+
         listViewList.setAdapter(arrayAdapter);
+        listViewDelete.setAdapter(arrayAdapter);
+
+        // delete order
+        listViewDelete.setOnItemClickListener((arg0, arg1, position, arg3) -> confirmDeleteOrder(specificOrders.get(position)));
+        listViewList.setOnItemClickListener((arg0, arg1, position, arg3) -> completeOrEdit(specificOrders.get(position)));
     }
 
     private void setUpListView() {
@@ -248,6 +273,65 @@ public class OrderView extends AppCompatActivity {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Are you sure you want to delete?").setPositiveButton("Yes", dialogClickListener)
+                .setNegativeButton("No", dialogClickListener).show();
+    }
+
+    private void completeOrEdit(Order order) {
+        DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
+            switch (which){
+                case DialogInterface.BUTTON_POSITIVE:
+                    // Edit
+                    Intent intent = new Intent(getApplicationContext(), SpecificOrderView.class);
+                    intent.putExtra("customerId", order.getCustomerId());
+                    intent.putExtra("serviceId", order.getServiceId());
+                    intent.putExtra("price", order.getPrice());
+                    intent.putExtra("id", order.getId());
+                    startActivity(intent);
+                    overridePendingTransition(0, 0);
+                    break;
+
+                case DialogInterface.BUTTON_NEGATIVE:
+                    // complete
+                    changeComplete(order);
+                    break;
+            }
+        };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("edit/(show) OR set complete / UnComplete").setPositiveButton("Edit", dialogClickListener)
+                .setNegativeButton("Complete / UnComplete", dialogClickListener).show();
+    }
+
+    private void changeComplete(Order order) {
+        DialogInterface.OnClickListener dialogClickListener = (dialog, which) -> {
+            switch (which){
+                case DialogInterface.BUTTON_POSITIVE:
+                    if (order.getCompleted()) order.setCompleted(false);
+                    else order.setCompleted(true);
+
+                    String message = "";
+                    if (order.getCompleted())
+                    message = orderController.setOrderToCompleted(order.getId());
+                    else
+                        message = orderController.setOrderToUnCompleted(order.getId());
+
+                    Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+
+                    // updated view
+                    displayList();
+
+                    break;
+
+                case DialogInterface.BUTTON_NEGATIVE:
+                    // no (do nothing)
+                    break;
+            }
+        };
+        String toChange = "Completed";
+        if (order.getCompleted()) toChange = "UN-completed";
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Set order to " + toChange).setPositiveButton("Yes", dialogClickListener)
                 .setNegativeButton("No", dialogClickListener).show();
     }
 

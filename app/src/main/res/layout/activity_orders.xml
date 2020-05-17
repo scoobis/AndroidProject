@@ -20,6 +20,16 @@
             android:textAlignment="center"
             android:textSize="50sp" />
 
+        <TextView
+            android:id="@+id/isCompletedTextView"
+            android:layout_width="match_parent"
+            android:layout_marginTop="60dp"
+            android:layout_height="wrap_content"
+            android:text="NOT Completed Orders"
+            android:textAlignment="center"
+            android:textSize="15sp"
+            android:visibility="gone"/>
+
         <ListView
             android:id="@+id/listViewList"
             android:layout_width="match_parent"

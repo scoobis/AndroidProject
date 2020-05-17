@@ -77,4 +77,33 @@ public class OrderDatabase extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete("orders", "id =" + id, null) > 0;
     }
+
+    public boolean setOrderToCompleted(int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues cv = new ContentValues();
+        cv.put("COMPLETED", true);
+
+        return db.update("orders", cv, "id=" + id, null) > 0;
+    }
+
+    public boolean setOrderToUnCompleted(int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues cv = new ContentValues();
+        cv.put("COMPLETED", false);
+
+        return db.update("orders", cv, "id=" + id, null) > 0;
+    }
+
+    public boolean editOrder(Order order) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+
+        cv.put("CUSTOMER_ID", order.getCustomerId());
+        cv.put("SERVICE_ID", order.getServiceId());
+        cv.put("PRICE", order.getPrice());
+
+        return db.update("orders", cv, "id=" + order.getId(), null) > 0;
+    }
 }

@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".view.SpecificEmployeeView"></activity>
+        <activity android:name=".view.SpecificOrderView"></activity>
+        <activity android:name=".view.SpecificEmployeeView" />
         <activity android:name=".view.SpecificCustomerView" />
         <activity android:name=".view.SpecificServiceView" />
         <activity android:name=".view.CustomerView" />

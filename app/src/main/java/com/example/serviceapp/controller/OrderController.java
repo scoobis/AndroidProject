@@ -48,20 +48,43 @@ public class OrderController {
         return "ops, something went wrong!";
     }
 
-    public Order editOrder(String id, Order newOrder) {
-        return null;
+    public String editOrder(int id, int customerId, int serviceId, int price) {
+        if (customerId <= 0) return "ops, something went wrong!";
+        else if (serviceId <= 0) return "ops, something went wrong!";
+        else if (id <= 0) return "ops, something went wrong!";
+
+        Order order = new Order();
+        order.setId(id);
+        order.setCustomerId(customerId);
+        order.setServiceId(serviceId);
+        order.setPrice(price);
+
+        boolean isDeleted = orderDatabase.editOrder(order);
+
+        if (isDeleted) return "Order Edited!";
+        return "ops, something went wrong!";
     }
 
     public ArrayList<Order> getAllOrders(String company) {
         return orderDatabase.getAllOrders(company);
     }
 
-    public void completeOrder(String id) {
+    public String setOrderToCompleted(int id) {
+        if (id <= 0) return "ops, something went wrong!";
 
+        boolean isSetToCompleted = orderDatabase.setOrderToCompleted(id);
+
+        if (isSetToCompleted) return "Order set to completed!";
+        return "ops, something went wrong!";
     }
 
-    public void uncompleteOrder(String id) {
+    public String setOrderToUnCompleted(int id) {
+        if (id <= 0) return "ops, something went wrong!";
 
+        boolean isSetToCompleted = orderDatabase.setOrderToUnCompleted(id);
+
+        if (isSetToCompleted) return "Order set to completed!";
+        return "ops, something went wrong!";
     }
 
 }
